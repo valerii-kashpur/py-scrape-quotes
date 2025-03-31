@@ -3,7 +3,7 @@ from dataclasses import dataclass, fields, astuple
 from typing import List
 
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 
 @dataclass
@@ -22,7 +22,7 @@ def get_page_content(url: str) -> BeautifulSoup:
     return BeautifulSoup(response.content, "html.parser")
 
 
-def extract_quote_data(quote) -> 'Quote':
+def extract_quote_data(quote: Tag) -> "Quote":
     return Quote(
         text=quote.select_one("span.text").text,
         author=quote.select_one("small.author").text,
@@ -30,7 +30,7 @@ def extract_quote_data(quote) -> 'Quote':
     )
 
 
-def fetch_quotes_from_page(page_num: int, base_url: str) -> List['Quote']:
+def fetch_quotes_from_page(page_num: int, base_url: str) -> List["Quote"]:
     url = f"{base_url}page/{page_num}/"
     page = get_page_content(url)
     quotes = page.select("div.quote")
@@ -38,7 +38,7 @@ def fetch_quotes_from_page(page_num: int, base_url: str) -> List['Quote']:
     return [extract_quote_data(quote) for quote in quotes]
 
 
-def fetch_quotes(base_url: str) -> List['Quote']:
+def fetch_quotes(base_url: str) -> List["Quote"]:
     res = []
     page_num = 1
 
